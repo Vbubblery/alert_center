@@ -1,0 +1,6 @@
+- table:
+    schema: public
+    name: alert
+- table:
+    schema: public
+    name: user
