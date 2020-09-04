@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configuration
+  labels:
+    app: alert-center-postgres
+data:
+  POSTGRES_DB: alert
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: flowlity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-center-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alert-center-postgres
+  template:
+    metadata:
+      labels:
+        app: alert-center-postgres
+    spec:
+      nodeSelector:
+        "agentpool": appservices
+      containers:
+        - name: alert-center-postgres
+          image: postgres:12-alpine
+          envFrom:
+            - configMapRef:
+                name: postgres-configuration
+          ports:
+            - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alert-center-postgres
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: alert-center-postgres

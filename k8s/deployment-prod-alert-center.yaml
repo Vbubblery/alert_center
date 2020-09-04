@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-center
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alert-center
+  template:
+    metadata:
+      labels:
+        app: alert-center
+    spec:
+      nodeSelector:
+        "agentpool": appservices
+      containers:
+        - name: alert-center
+          image: containerprod.azurecr.io/alert-center:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+        - name: app-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: alert-center
+  name: alert-center
+spec:
+  ports:
+    - port: 80
+      name: high
+      protocol: TCP
+      targetPort: 8000
+  selector:
+    app: alert-center
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: alert-center
+spec:
+  rules:
+    - host: aks-prod-alert.flowlity.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: alert-center
+              servicePort: 80

@@ -5,15 +5,15 @@ services:
     restart: always
     networks:
       - alert
-    volumes:
-      - db_data:/var/lib/postgresql/alert_data
     environment:
       POSTGRES_DB: alert
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespassword
-  graphql-engine:
-    image: img_alert
-    container_name: alert
+  alert_center:
+    image: img_alert_center
+    container_name: alert_center
+    depends_on:
+      - "postgres"
     ports:
       - "8000:8000"
     build:
@@ -30,8 +30,7 @@ services:
     restart: always
     networks:
       - alert
-volumes:
-  db_data:
+
 networks:
   alert:
     name: alert_network
