@@ -2,6 +2,7 @@ version: 2
 endpoint: http://localhost:8000
 admin_secret: flowlity
 metadata_directory: metadata
+migrations_directory: migrations
 actions:
   kind: synchronous
   handler_webhook_baseurl: http://localhost:3000
