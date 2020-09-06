@@ -1,3 +1,19 @@
 - table:
     schema: public
     name: alert
+  select_permissions:
+  - role: client
+    permission:
+      columns:
+      - criticality
+      - exceeding_value
+      - site_id
+      - product_site_id
+      - id
+      - product_site_name
+      - message
+      - date_of_alert
+      filter:
+        site_id:
+          _eq: X-Hasura-Site-Id
+      allow_aggregations: true
